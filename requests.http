@@ -1,0 +1,84 @@
+@admin_token = 2|bd51ydBsxRfW6ehvnYQzvAYH2fdYiNwFOAAs7s3ode00450c
+@manager_token = 3|0dqvXpFfzAucb51HCIypYsTcUllw6Nhsc4RAIe2G07690d31
+@sales_token = 4|OicsHKtY8Zr6hYC9AD025RBu2c0PpWcONrvK9DHl7e238e13
+
+### login admin
+POST http://localhost:8000/api/login
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "password": "password"
+}
+
+### login manager
+POST http://localhost:8000/api/login
+Content-Type: application/json
+
+{
+    "email": "purchasing00@example.com",
+    "password": "password"
+}
+
+### login sales
+POST http://localhost:8000/api/login
+Content-Type: application/json
+
+{
+    "email": "sales00@example.com",
+    "password": "password"
+}
+
+### auth user
+GET http://localhost:8000/api/users/me
+Authorization: Bearer {{admin_token}}
+
+### auth manager
+GET http://localhost:8000/api/users/me
+Authorization: Bearer {{manager_token}}
+
+### auth sales
+GET http://localhost:8000/api/users/me
+Authorization: Bearer {{sales_token}}
+
+### logout
+POST http://localhost:8000/api/logout
+Authorization: Bearer {{admin_token}}
+
+### get vendors
+GET http://localhost:8000/api/vendors
+Authorization: Bearer {{admin_token}}
+
+### create vendor
+POST http://localhost:8000/api/vendors
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+    "registered_name": "Distributor 1",
+    "address": "1234567890",
+    "country": "1234567890",
+    "vat_number": "412345678900",
+    "type": "distributor",
+    "sales_contact_id": "5",
+    "logistics_contact_id": "15"
+}
+
+### update vendor
+PUT http://localhost:8000/api/vendors/1
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+    "registered_name": "Distributor 1",
+    "address": "1234567890",
+    "country": "1234567890",
+    "vat_number": "412345678900",
+    "type": "distributor",
+    "sales_contact_id": "1",
+    "logistics_contact_id": "1"
+}
+
+### delete vendor
+DELETE http://localhost:8000/api/vendors/1
+Authorization: Bearer {{admin_token}}
