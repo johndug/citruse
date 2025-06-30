@@ -8,7 +8,6 @@ A modern web application built with Laravel 12, Vue 3, and Tailwind CSS for mana
 - **Vendor Management**: Supplier and distributor management with contact information
 - **Product Catalog**: Product management with yearly pricing
 - **Purchase Orders**: Complete order lifecycle management with status tracking
-- **Modern UI**: Responsive design with Tailwind CSS
 - **API-First**: RESTful API with Laravel Sanctum authentication
 
 ## Tech Stack
@@ -26,8 +25,6 @@ A modern web application built with Laravel 12, Vue 3, and Tailwind CSS for mana
 - PHP 8.2 or higher
 - Composer
 - Node.js 18+ and npm
-- MySQL 8.0+ or PostgreSQL 13+
-- Git
 
 ## Installation
 
@@ -61,12 +58,7 @@ cp .env.example .env
 Edit `.env` file with your database credentials:
 
 ```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=citruse
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
+DB_CONNECTION=sqlite 
 ```
 
 ### 5. Generate Application Key
@@ -86,26 +78,6 @@ php artisan migrate
 ```bash
 php artisan db:seed
 ```
-
-### 8. Build Frontend Assets
-
-For development:
-```bash
-npm run dev
-```
-
-For production:
-```bash
-npm run build
-```
-
-### 9. Start the Development Server
-
-```bash
-php artisan serve
-```
-
-The application will be available at `http://localhost:8000`
 
 ## Development
 
@@ -152,51 +124,3 @@ The application provides RESTful API endpoints:
 - **Admin**: Full access to all features
 - **Manager**: Can manage purchase orders
 - **Sales**: Limited access to view data
-
-## Production Deployment
-
-### 1. Environment Configuration
-
-Set production environment variables:
-
-```env
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://your-domain.com
-```
-
-### 2. Optimize Application
-
-```bash
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
-### 3. Build Assets
-
-```bash
-npm run build
-```
-
-### 4. Set File Permissions
-
-```bash
-chmod -R 755 storage bootstrap/cache
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-## Support
-
-For support, please open an issue in the GitHub repository or contact the development team.
