@@ -69,6 +69,7 @@ export type PurchaseOrderStatus = 'new' | 'accepted_by_supplier' | 'in_delivery'
 
 export type PurchaseOrder = {
     po_id: string;
+    id: number;
     vendor_id: number;
     vendor: Vendor;
     product_code: string;
@@ -83,6 +84,7 @@ export type PurchaseOrder = {
 
 export type PurchaseOrderRequest = {
     po_id: string | null;
+    id: number | null;
     vendor_id: number | null;
     product_code: string;
     quantity: number;

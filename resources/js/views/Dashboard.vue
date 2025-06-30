@@ -1,8 +1,11 @@
 <template>
-    <div>
-        <h1>Purchase Orders</h1>
+    <div class="space-y-6">
+        <div class="bg-white shadow rounded-lg p-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-4">Purchase Orders</h1>
+            <p class="text-gray-600">Manage your purchase orders and track their status.</p>
+        </div>
+        <PurchaseOrder v-if="purchaseOrderStore.isAllowed" />
     </div>
-    <PurchaseOrder v-if="purchaseOrderStore.isAllowed" />
 </template>
 
 <script setup lang="ts">

@@ -39,7 +39,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::group(['prefix' => 'orders'], function () {
         Route::get('/', [PurchaseOrderController::class, 'index']);
         Route::post('/pod', [PurchaseOrderController::class, 'createNewPOD']);
-        Route::post('/pos', [PurchaseOrderController::class, 'createNewPOS']);
+        Route::put('/{purchaseOrder}', [PurchaseOrderController::class, 'update']);
+        Route::delete('/{purchaseOrder}', [PurchaseOrderController::class, 'delete']);
     });
 });
 

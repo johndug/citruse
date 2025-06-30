@@ -8,6 +8,7 @@ use App\Enums\VendorType;
 use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Faker\Factory as Faker;
 
 class VendorSeeder extends Seeder
 {
@@ -16,11 +17,13 @@ class VendorSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = Faker::create();
+
         // Create 10 distributors
         for ($i = 1; $i <= 10; $i++) {
             Vendor::create([
                 'name' => 'Distributor ' . $i,
-                'address' => 'distributor' . $i . '@example.com',
+                'address' => $faker->address,
                 'country' => '1234567890',
                 'vat_number' => '123 Main St, Anytown, USA',
                 'type' => VendorType::DISTRIBUTOR,
@@ -44,7 +47,7 @@ class VendorSeeder extends Seeder
         for ($i = 11; $i <= 20; $i++) {
             Vendor::create([
                 'name' => 'Supplier ' . $i,
-                'address' => 'supplier' . $i . '@example.com',
+                'address' => $faker->address,
                 'country' => '1234567890',
                 'vat_number' => '123 Main St, Anytown, USA',
                 'type' => VendorType::SUPPLIER,

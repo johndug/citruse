@@ -68,14 +68,14 @@ export default defineStore('purchaseOrderStore', () => {
 
     const updatePurchaseOrder = async (purchaseOrder: PurchaseOrderRequest) => {
         isLoading.value = true
-        await axios.put(`/orders/${purchaseOrder.po_id}`, purchaseOrder, {
+        await axios.put(`/orders/${purchaseOrder.id}`, purchaseOrder, {
                 headers: {
                     'Authorization': `Bearer ${authUser.user?.token}`
                 }
             })
             .then(res => res.data)
             .then(data => {
-                purchaseOrders.value = purchaseOrders.value.map(order => order.po_id === purchaseOrder.po_id ? data.data : order)
+                purchaseOrders.value = purchaseOrders.value.map(order => order.po_id === purchaseOrder.po_id ? data : order)
             })
             .catch(error => {
                 console.error(error)
@@ -85,16 +85,16 @@ export default defineStore('purchaseOrderStore', () => {
             })
     }
 
-    const deletePurchaseOrder = async (po_id: string) => {
+    const deletePurchaseOrder = async (id: number) => {
         isLoading.value = true
-        await axios.delete(`/orders/${po_id}`, {
+        await axios.delete(`/orders/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${authUser.user?.token}`
                 }
             })
             .then(res => res.data)
             .then(data => {
-                purchaseOrders.value = purchaseOrders.value.filter(order => order.po_id !== po_id)
+                purchaseOrders.value = purchaseOrders.value.filter(order => order.id !== id)
             })
             .catch(error => {
                 console.error(error)

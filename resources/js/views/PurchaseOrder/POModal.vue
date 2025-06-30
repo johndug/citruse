@@ -1,39 +1,99 @@
 <template>
-    <div class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1>{{ props.action === 'edit' ? 'Edit Purchase Order' : 'Add Purchase Order' }}</h1>
-                <button @click="closeModal">Close</button>
+    <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">
+                        {{ props.action === 'edit' ? 'Edit Purchase Order' : 'Add Purchase Order' }}
+                    </h3>
+                    <button
+                        @click="closeModal"
+                        class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                    >
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <form @submit.prevent="savePurchaseOrder" v-if="!purchaseOrderStore.isLoading" class="space-y-4">
+                    <div>
+                        <label for="vendor_id" class="block text-sm font-medium text-gray-700 mb-1">Vendor</label>
+                        <select
+                            id="vendor_id"
+                            v-model="formData.vendor_id"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        >
+                            <option value="">Select a vendor</option>
+                            <option v-for="vendor in vendorStore.vendors" :key="vendor.id" :value="vendor.id">{{ vendor.name }}</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="product_code" class="block text-sm font-medium text-gray-700 mb-1">Product</label>
+                        <select
+                            id="product_code"
+                            v-model="formData.product_code"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        >
+                            <option value="">Select a product</option>
+                            <option v-for="product in productStore.products" :key="product.code" :value="product.code">{{ product.description }}</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                        <input
+                            type="number"
+                            id="quantity"
+                            v-model="formData.quantity"
+                            min="1"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        />
+                    </div>
+
+                    <div>
+                        <label for="delivery_date" class="block text-sm font-medium text-gray-700 mb-1">Delivery Date</label>
+                        <input
+                            type="date"
+                            id="delivery_date"
+                            v-model="formData.delivery_date"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        />
+                    </div>
+
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select
+                            id="status"
+                            v-model="formData.status"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        >
+                            <option v-for="status in purchaseOrderStatuses" :key="status" :value="status">{{ status.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) }}</option>
+                        </select>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button
+                            type="button"
+                            @click="closeModal"
+                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                        >
+                            {{ props.action === 'edit' ? 'Update' : 'Create' }}
+                        </button>
+                    </div>
+                </form>
+
+                <div v-if="purchaseOrderStore.isLoading" class="flex justify-center items-center py-8">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                </div>
             </div>
-            <form @submit.prevent="savePurchaseOrder" v-if="!purchaseOrderStore.isLoading">
-                <div>
-                    <label for="vendor_id">Vendor</label>
-                    <select id="vendor_id" v-model="formData.vendor_id">
-                        <option v-for="vendor in vendorStore.vendors" :key="vendor.id" :value="vendor.id">{{ vendor.name }}</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="product_code">Product</label>
-                    <select id="product_code" v-model="formData.product_code">
-                        <option v-for="product in productStore.products" :key="product.code" :value="product.code">{{ product.description }}</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="quantity">Quantity</label>
-                    <input type="number" id="quantity" v-model="formData.quantity" />
-                </div>
-                <div>
-                    <label for="delivery_date">Delivery Date</label>
-                    <input type="date" id="delivery_date" v-model="formData.delivery_date" />
-                </div>
-                <div>
-                    <label for="status">Status</label>
-                    <select id="status" v-model="formData.status">
-                        <option v-for="status in purchaseOrderStatuses" :key="status" :value="status">{{ status }}</option>
-                    </select>
-                </div>
-                <button type="submit">{{ props.action === 'edit' ? 'Update' : 'Create' }}</button>
-            </form>
         </div>
     </div>
 </template>
@@ -57,6 +117,7 @@ const emit = defineEmits(['close'])
 const props = defineProps<PurchaseOrderRequest>()
 
 const formData = ref({
+    id: props.id || null,
     vendor_id: props.vendor_id || null,
     product_code: props.product_code || '',
     quantity: props.quantity || 0,
@@ -67,7 +128,11 @@ const formData = ref({
 })
 
 const savePurchaseOrder = () => {
-    purchaseOrderStore.createPurchaseOrder(formData.value)
+    if (props.action === 'edit') {
+        purchaseOrderStore.updatePurchaseOrder(formData.value)
+    } else {
+        purchaseOrderStore.createPurchaseOrder(formData.value)
+    }
     closeModal()
 }
 
@@ -80,23 +145,3 @@ onMounted(() => {
     productStore.fetchProducts()
 })
 </script>
-
-<style scoped>
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-}
-</style>

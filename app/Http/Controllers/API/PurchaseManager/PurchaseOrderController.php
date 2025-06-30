@@ -25,6 +25,28 @@ class PurchaseOrderController extends Controller
         return response()->json($orders);
     }
 
+    public function update(Request $request, PurchaseOrder $purchaseOrder)
+    {
+        $this->authorize('update', $purchaseOrder);
+
+        $data = $request->validate([
+            'status' => 'required|in:' . implode(',', array_map(fn($status) => $status->value, PurchaseOrderStatus::cases())),
+        ]);
+
+        $purchaseOrder->update($data);
+
+        return response()->json($purchaseOrder);
+    }
+
+    public function delete(PurchaseOrder $purchaseOrder)
+    {
+        $this->authorize('delete', $purchaseOrder);
+
+        $purchaseOrder->delete();
+
+        return response()->json(['message' => 'Purchase order deleted successfully'], 204);
+    }
+
     public function createNewPOD(Request $request)
     {
         $this->authorize('create', PurchaseOrder::class);
