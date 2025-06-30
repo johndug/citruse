@@ -2,6 +2,26 @@
 
 A modern web application built with Laravel 12, Vue 3, and Tailwind CSS for managing citrus product supply chains, vendors, and purchase orders.
 
+## What is missing
+- **Dockerfile**: Didn't feel confident in containerizing my project
+- **Product Price Management**: Didn't get around to that
+- **Postgres missing**: Same reason why the its why its not in a container
+
+## Database Layout
+- I chose the make a venders table with a type, distributor and supplier
+- I separated the products from the prices
+- DDL is here [https://github.com/johndug/citruse/blob/main/database_ddl.txt]
+
+## Summary
+
+I was a little foggy around the PM contacts the FSA to confirm requirements
+And does the purchase_orders table need a distributer and a supplier?
+
+## AI Assistance
+
+- all tailwind was done by claude
+- and generally I needed more assistance with the FE than the BE
+
 ## Features
 
 - **User Management**: Role-based authentication (Admin, Manager, Sales)
@@ -12,7 +32,7 @@ A modern web application built with Laravel 12, Vue 3, and Tailwind CSS for mana
 
 ## Tech Stack
 
-- **Backend**: Laravel 11 (PHP 8.2+)
+- **Backend**: Laravel 12 (PHP 8.2+)
 - **Frontend**: Vue 3 with Composition API
 - **State Management**: Pinia
 - **Styling**: Tailwind CSS
