@@ -2,6 +2,9 @@
 
 A modern web application built with Laravel 12, Vue 3, and Tailwind CSS for managing citrus product supply chains, vendors, and purchase orders.
 
+## What is done
+- All the axios calls also handlers error from the server and isLoading disables the the form
+
 ## What is missing
 - **Dockerfile**: Didn't feel confident in containerizing my project
 - **Product Price Management**: Didn't get around to that
