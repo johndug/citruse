@@ -7,6 +7,8 @@ import type { Vendor, VendorRequest } from '../types/types'
 export default defineStore('vendorStore', () => {
     const vendors = ref<Vendor[]>([])
     const authUser = useAuthUser()
+    const isLoading = ref<boolean>(false)
+    const error = ref<string | null>(null)
 
     const fetchVendors = async () => {
         await axios.get('/vendors', {
@@ -21,6 +23,7 @@ export default defineStore('vendorStore', () => {
     }
 
     const createVendor = async (vendor: VendorRequest) => {
+        isLoading.value = true
         await axios.post('/vendors', vendor, {
                 headers: {
                     'Authorization': `Bearer ${authUser.user?.token}`
@@ -31,11 +34,15 @@ export default defineStore('vendorStore', () => {
                 vendors.value.push(data)
             })
             .catch(error => {
-                console.error(error)
+                error.value = error.response.data.message || 'An error occurred while creating vendor'
+            })
+            .finally(() => {
+                isLoading.value = false
             })
     }
 
     const updateVendor = async (id: number, vendor: VendorRequest) => {
+        isLoading.value = true
         await axios.put(`/vendors/${id}`, vendor, {
                 headers: {
                     'Authorization': `Bearer ${authUser.user?.token}`
@@ -46,11 +53,15 @@ export default defineStore('vendorStore', () => {
                 vendors.value = vendors.value.map(vendor => vendor.id === id ? data : vendor)
             })
             .catch(error => {
-                console.error(error)
+                error.value = error.response.data.message || 'An error occurred while updating vendor'
+            })
+            .finally(() => {
+                isLoading.value = false
             })
     }
 
     const deleteVendor = async (id: number) => {
+        isLoading.value = true
         await axios.delete(`/vendors/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${authUser.user?.token}`
@@ -61,7 +72,10 @@ export default defineStore('vendorStore', () => {
                 vendors.value = vendors.value.filter(vendor => vendor.id !== id)
             })
             .catch(error => {
-                console.error(error)
+                error.value = error.response.data.message || 'An error occurred while deleting vendor'
+            })
+            .finally(() => {
+                isLoading.value = false
             })
     }
 
@@ -71,5 +85,7 @@ export default defineStore('vendorStore', () => {
         createVendor,
         updateVendor,
         deleteVendor,
+        isLoading,
+        error,
     }
 })

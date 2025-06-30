@@ -16,7 +16,7 @@
                     </button>
                 </div>
 
-                <form @submit.prevent="saveVendor" class="space-y-4">
+                <form @submit.prevent="saveVendor" class="space-y-4" :disabled="vendorStore.isLoading">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
                         <input
@@ -106,6 +106,7 @@
                         </button>
                     </div>
                 </form>
+                <ErrorAlert :error-message="vendorStore.error" />
             </div>
         </div>
     </div>
@@ -116,6 +117,7 @@ import { ref, watch, onMounted } from 'vue'
 import type { VendorRequest, VendorType } from '../../types/types'
 import useVendorStore from '../../store/useVendorStore'
 import useContactStore from '../../store/useContactStore'
+import ErrorAlert from '../../components/ErrorAlert.vue'
 
 const vendorStore = useVendorStore()
 const contactStore = useContactStore()

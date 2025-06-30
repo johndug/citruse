@@ -16,7 +16,7 @@
                     </button>
                 </div>
 
-                <form @submit.prevent="saveProduct" class="space-y-4">
+                <form @submit.prevent="saveProduct" class="space-y-4" :disabled="productStore.isLoading">
                     <div>
                         <label for="code" class="block text-sm font-medium text-gray-700 mb-1">Code</label>
                         <input
@@ -54,6 +54,7 @@
                         </button>
                     </div>
                 </form>
+                <ErrorAlert :error-message="productStore.error" />
             </div>
         </div>
     </div>
@@ -64,6 +65,7 @@ import { ref, watch, onMounted } from 'vue'
 import type { ProductRequest } from '../../types/types'
 import useProductStore from '../../store/useProductStore'
 import useContactStore from '../../store/useContactStore'
+import ErrorAlert from '../../components/ErrorAlert.vue'
 
 const productStore = useProductStore()
 const contactStore = useContactStore()

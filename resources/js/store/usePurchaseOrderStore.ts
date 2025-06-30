@@ -12,6 +12,7 @@ export default defineStore('purchaseOrderStore', () => {
     const allowedRoles: Role[] = ['admin', 'manager']
     const isAllowed = computed(() => allowedRoles.includes(authUser.role as Role))
     const isLoading = ref(false)
+    const error = ref<string | null>(null)
 
     const fetchPurchaseOrders = async () => {
         isLoading.value = true
@@ -25,7 +26,7 @@ export default defineStore('purchaseOrderStore', () => {
                 purchaseOrders.value = data.data
             })
             .catch(error => {
-                console.error(error)
+                error.value = error.response.data.message || 'An error occurred while fetching purchase orders'
             })
             .finally(() => {
                 isLoading.value = false
@@ -33,6 +34,7 @@ export default defineStore('purchaseOrderStore', () => {
     }
 
     const fetchPurchaseOrderStatuses = async () => {
+        isLoading.value = true
         await axios.get('/orders/statuses', {
                 headers: {
                     'Authorization': `Bearer ${authUser.user?.token}`
@@ -43,7 +45,10 @@ export default defineStore('purchaseOrderStore', () => {
                 purchaseOrderStatuses.value = data.data
             })
             .catch(error => {
-                console.error(error)
+                error.value = error.response.data.message || 'An error occurred while fetching purchase order statuses'
+            })
+            .finally(() => {
+                isLoading.value = false
             })
     }
 
@@ -59,7 +64,7 @@ export default defineStore('purchaseOrderStore', () => {
                 purchaseOrders.value.push(data)
             })
             .catch(error => {
-                console.error(error)
+                error.value = error.response.data.message || 'An error occurred while creating purchase order'
             })
             .finally(() => {
                 isLoading.value = false
@@ -78,7 +83,7 @@ export default defineStore('purchaseOrderStore', () => {
                 purchaseOrders.value = purchaseOrders.value.map(order => order.po_id === purchaseOrder.po_id ? data : order)
             })
             .catch(error => {
-                console.error(error)
+                error.value = error.response.data.message || 'An error occurred while updating purchase order'
             })
             .finally(() => {
                 isLoading.value = false
@@ -97,7 +102,7 @@ export default defineStore('purchaseOrderStore', () => {
                 purchaseOrders.value = purchaseOrders.value.filter(order => order.id !== id)
             })
             .catch(error => {
-                console.error(error)
+                error.value = error.response.data.message || 'An error occurred while deleting purchase order'
             })
             .finally(() => {
                 isLoading.value = false
@@ -113,6 +118,7 @@ export default defineStore('purchaseOrderStore', () => {
         updatePurchaseOrder,
         deletePurchaseOrder,
         isAllowed,
-        isLoading
+        isLoading,
+        error,
     }
 })

@@ -56,7 +56,7 @@ import { onMounted, ref } from 'vue'
 import useProductStore from '../../store/useProductStore'
 import { formatCurrency } from '../../utils/currency'
 import type { ProductRequest } from '../../types/types'
-import Modal from './Modal.vue'
+import Modal from './ProductModal.vue'
 
 const productStore = useProductStore()
 const selectedProduct = ref<ProductRequest | null>(null)

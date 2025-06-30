@@ -16,7 +16,7 @@
                     </button>
                 </div>
 
-                <form @submit.prevent="savePurchaseOrder" v-if="!purchaseOrderStore.isLoading" class="space-y-4">
+                <form @submit.prevent="savePurchaseOrder" class="space-y-4" :disabled="purchaseOrderStore.isLoading">
                     <div>
                         <label for="vendor_id" class="block text-sm font-medium text-gray-700 mb-1">Vendor</label>
                         <select
@@ -89,10 +89,7 @@
                         </button>
                     </div>
                 </form>
-
-                <div v-if="purchaseOrderStore.isLoading" class="flex justify-center items-center py-8">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                </div>
+                <ErrorAlert :error-message="purchaseOrderStore.error" />
             </div>
         </div>
     </div>
@@ -105,6 +102,7 @@ import useVendorStore from '../../store/useVendorStore'
 import useProductStore from '../../store/useProductStore'
 import usePurchaseOrderStore from '../../store/usePurchaseOrderStore'
 import useAuthUser from '../../store/useAuthUser'
+import ErrorAlert from '../../components/ErrorAlert.vue'
 
 const authStore = useAuthUser()
 // only show statuses that are allowed for the user
