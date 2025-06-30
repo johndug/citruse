@@ -33,12 +33,9 @@ class ApiAuthController extends Controller
         $user->tokens()->delete();
 
         // Create new token
-        $token = $user->createToken('api-token')->plainTextToken;
+        $user->token = $user->createToken('api-token')->plainTextToken;
 
-        return response()->json([
-            'user' => $user,
-            'token' => $token,
-        ]);
+        return response()->json($user);
     }
 
     /**

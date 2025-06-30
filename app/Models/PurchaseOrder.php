@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Enums\VendorType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class PurchaseOrder extends Model
@@ -20,7 +19,7 @@ class PurchaseOrder extends Model
         'status',
     ];
 
-    protected $hidden = ['vendor_type', 'id'];
+    protected $hidden = ['vendor_type'];
 
     protected $appends = ['po_id'];
 
@@ -36,8 +35,8 @@ class PurchaseOrder extends Model
                 : 'POS'.Str::padLeft($this->id, 6, '0');
     }
 
-    public function items(): HasMany
+    public function product(): BelongsTo
     {
-        return $this->hasMany(PurchaseOrderItem::class);
+        return $this->belongsTo(Product::class);
     }
 }

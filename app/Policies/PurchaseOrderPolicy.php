@@ -21,11 +21,6 @@ class PurchaseOrderPolicy
         return $user->role === UserRole::MANAGER->value || $user->role === UserRole::ADMIN->value;
     }
 
-    public function view(User $user, PurchaseOrder $purchaseOrder)
-    {
-        return $user->role === UserRole::MANAGER->value || $user->role === UserRole::ADMIN->value;
-    }
-
     public function create(User $user)
     {
         return $user->role === UserRole::MANAGER->value || $user->role === UserRole::ADMIN->value;
@@ -33,11 +28,11 @@ class PurchaseOrderPolicy
 
     public function update(User $user, PurchaseOrder $purchaseOrder)
     {
-        return $user->role === UserRole::MANAGER->value || $user->role === UserRole::ADMIN->value;
+        return $user->role === UserRole::ADMIN->value;
     }
 
     public function delete(User $user, PurchaseOrder $purchaseOrder)
     {
-        return $user->role === UserRole::MANAGER->value || $user->role === UserRole::ADMIN->value;
+        return $user->role === UserRole::ADMIN->value;
     }
 }

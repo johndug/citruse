@@ -17,10 +17,10 @@ class VendorController extends Controller
     {
         $this->authorize('viewAny', Vendor::class);
 
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 100);
         $page = $request->input('page', 1);
 
-        $vendors = Vendor::paginate($perPage, ['*'], 'page', $page);
+        $vendors = Vendor::with('salesContact', 'logisticsContact')->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json($vendors);
     }
@@ -33,18 +33,18 @@ class VendorController extends Controller
         $this->authorize('create', Vendor::class);
 
         $data = $request->validate([
-            'registered_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'address' => 'required|string',
             'country' => 'required',
-            'vat_number' => 'required|string|max:10',
+            'vat_number' => 'required|string',
             'type' => 'required|in:'.implode(',', array_column(VendorType::cases(), 'value')),
             'sales_contact_id' => 'required|exists:users,id,role,'.UserRole::SALES->value,
             'logistics_contact_id' => 'required|exists:users,id,role,'.UserRole::LOGISTICS->value,
         ]);
 
-        $distributer = Vendor::create($data);
+        $vendor = Vendor::create($data);
 
-        return response()->json($distributer, 201);
+        return response()->json($vendor->load('salesContact', 'logisticsContact'), 201);
     }
 
     /**
@@ -55,10 +55,10 @@ class VendorController extends Controller
         $this->authorize('update', $vendor);
 
         $data = $request->validate([
-            'registered_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'address' => 'required|string',
             'country' => 'required',
-            'vat_number' => 'required|string|max:10',
+            'vat_number' => 'required|string',
             'type' => 'required|in:'.implode(',', array_column(VendorType::cases(), 'value')),
             'sales_contact_id' => 'required|exists:users,id,role,'.UserRole::SALES->value,
             'logistics_contact_id' => 'required|exists:users,id,role,'.UserRole::LOGISTICS->value,
@@ -66,7 +66,7 @@ class VendorController extends Controller
 
         $vendor->update($data);
 
-        return response()->json($vendor);
+        return response()->json($vendor->load('salesContact', 'logisticsContact'), 201);
     }
 
     /**

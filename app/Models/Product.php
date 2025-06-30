@@ -16,10 +16,9 @@ class Product extends Model
 
     public $incrementing = false;
 
-    public function purchaseOrderItems(): HasMany
-    {
-        return $this->hasMany(PurchaseOrderItem::class);
-    }
+    protected $hidden = ['deleted_at'];
+
+    protected $appends = ['current_price'];
 
     public function prices(): HasMany
     {

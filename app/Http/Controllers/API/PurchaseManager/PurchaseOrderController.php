@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Enums\VendorType;
 use App\Enums\PurchaseOrderStatus;
 use Illuminate\Http\Request;
+use Exception;
 
 class PurchaseOrderController extends Controller
 {
@@ -19,9 +20,31 @@ class PurchaseOrderController extends Controller
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);
 
-        $orders = PurchaseOrder::paginate($perPage, ['*'], 'page', $page);
+        $orders = PurchaseOrder::with('vendor', 'product')->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json($orders);
+    }
+
+    public function update(Request $request, PurchaseOrder $purchaseOrder)
+    {
+        $this->authorize('update', $purchaseOrder);
+
+        $data = $request->validate([
+            'status' => 'required|in:' . implode(',', array_map(fn($status) => $status->value, PurchaseOrderStatus::cases())),
+        ]);
+
+        $purchaseOrder->update($data);
+
+        return response()->json($purchaseOrder);
+    }
+
+    public function delete(PurchaseOrder $purchaseOrder)
+    {
+        $this->authorize('delete', $purchaseOrder);
+
+        $purchaseOrder->delete();
+
+        return response()->json(['message' => 'Purchase order deleted successfully'], 204);
     }
 
     public function createNewPOD(Request $request)
@@ -33,36 +56,22 @@ class PurchaseOrderController extends Controller
             'product_code' => 'required|exists:products,code',
             'quantity' => 'required|numeric|min:1',
             'delivery_date' => 'required|date|after:now',
-            'supplier_id' => 'required|exists:vendors,id',
         ]);
 
-        // Verify vendor is a distributor
-        $vendor = Vendor::findOrFail($data['vendor_id']);
-        if ($vendor->type !== VendorType::DISTRIBUTOR->value) {
+        $order = $this->createPOD($data);
+
+        if ($order instanceof Exception) {
             return response()->json([
-                'message' => 'Vendor must be a distributor for POD creation'
+                'message' => $order->getMessage()
             ], 422);
         }
 
-        // workout total price
-        $data = [
-            ...$data,
-            'total' => Product::findOrFail($data['product_code'])->current_price * $data['quantity'],
-            'status' => PurchaseOrderStatus::NEW->value,
-            'vendor_type' => $vendor->type,
-        ];
+        // TODO: Uncomment this when POS is implemented. Where is the supplier?
+        // $this->createPOS(Arr::except($data, ['supplier_id']));
 
-        // Create the purchase order
-        $order = PurchaseOrder::create($data);
-
-        $this->createNewPOS(Request::create('/', 'POST', [
-            'vendor_id' => $data['supplier_id'],
-            'product_code' => $data['product_code'],
-            'quantity' => $data['quantity'],
-            'delivery_date' => $data['delivery_date'],
-        ], [], [], [
-            'HTTP_AUTHORIZATION' => 'Bearer ' . $request->bearerToken(),
-        ]));
+        // if ($order instanceof Exception) {
+        //     Log::error($order->getMessage());
+        // }
 
         return response()->json($order, 201);
     }
@@ -78,11 +87,53 @@ class PurchaseOrderController extends Controller
             'delivery_date' => 'required|date|after:now',
         ]);
 
+        $order = $this->createPOS($data);
+
+        if ($order instanceof Exception) {
+            return response()->json([
+                'message' => $order->getMessage()
+            ], 422);
+        }
+
+        return response()->json($order, 201);
+    }
+
+    /**
+     * Create a new POD
+     *
+     * @param array $data
+     * @return PurchaseOrder | Exception
+     */
+    private function createPOD(array $data)
+    {
+        // Verify vendor is a distributor
+        $vendor = Vendor::findOrFail($data['vendor_id']);
+        if ($vendor->type !== VendorType::DISTRIBUTOR->value) {
+            return new Exception('Vendor must be a distributor for POD creation');
+        }
+
+        // workout total price
+        $data = [
+            ...$data,
+            'total' => Product::findOrFail($data['product_code'])->current_price * $data['quantity'],
+            'status' => PurchaseOrderStatus::NEW->value,
+            'vendor_type' => $vendor->type,
+        ];
+
+        return PurchaseOrder::create($data);
+    }
+
+    /**
+     * Create a new POS
+     *
+     * @param array $data
+     * @return PurchaseOrder | Exception
+     */
+    private function createPOS(array $data): PurchaseOrder | Exception
+    {
         $vendor = Vendor::findOrFail($data['vendor_id']);
         if ($vendor->type !== VendorType::SUPPLIER->value) {
-            return response()->json([
-                'message' => 'Vendor must be a supplier for POS creation'
-            ], 422);
+            return new Exception('Vendor must be a supplier for POS creation');
         }
 
         $data = [
@@ -92,6 +143,6 @@ class PurchaseOrderController extends Controller
             'vendor_type' => $vendor->type,
         ];
 
-        $order = PurchaseOrder::create($data);
+        return PurchaseOrder::create($data);
     }
 }
