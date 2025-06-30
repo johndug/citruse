@@ -5,16 +5,8 @@ namespace App\Policies;
 use App\Enums\UserRole;
 use App\Models\User;
 
-class VendorPolicy
+class UserPolicy
 {
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
     public function viewAny(User $user)
     {
         return $user->role === UserRole::ADMIN->value || $user->role === UserRole::MANAGER->value;
@@ -25,12 +17,12 @@ class VendorPolicy
         return $user->role === UserRole::ADMIN->value;
     }
 
-    public function update(User $user)
+    public function update(User $user, User $model)
     {
         return $user->role === UserRole::ADMIN->value;
     }
 
-    public function delete(User $user)
+    public function delete(User $user, User $model)
     {
         return $user->role === UserRole::ADMIN->value;
     }

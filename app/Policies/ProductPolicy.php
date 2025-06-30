@@ -18,12 +18,7 @@ class ProductPolicy
 
     public function viewAny(User $user)
     {
-        return $user->role === UserRole::ADMIN->value;
-    }
-
-    public function view(User $user, Product $product)
-    {
-        return $user->role === UserRole::ADMIN->value;
+        return $user->role === UserRole::ADMIN->value || $user->role === UserRole::MANAGER->value;
     }
 
     public function create(User $user)

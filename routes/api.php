@@ -5,14 +5,16 @@ use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\API\Admin\VendorController;
 use App\Http\Controllers\API\PurchaseManager\PurchaseOrderController;
 use App\Http\Controllers\API\Admin\ProductController;
+use App\Http\Controllers\API\Admin\UserController;
 
 // Public authentication routes
 Route::post('/login', [ApiAuthController::class, 'login']);
 
-// Protected routes
+// Protected auth routes
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [ApiAuthController::class, 'logout']);
     Route::get('/users/me', [ApiAuthController::class, 'me'])->name('users.me');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {

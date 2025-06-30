@@ -33,11 +33,11 @@ class PurchaseOrderPolicy
 
     public function update(User $user, PurchaseOrder $purchaseOrder)
     {
-        return $user->role === UserRole::MANAGER->value || $user->role === UserRole::ADMIN->value;
+        return $user->role === UserRole::MANAGER->value;
     }
 
     public function delete(User $user, PurchaseOrder $purchaseOrder)
     {
-        return $user->role === UserRole::MANAGER->value || $user->role === UserRole::ADMIN->value;
+        return $user->role === UserRole::MANAGER->value;
     }
 }

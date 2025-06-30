@@ -36,8 +36,8 @@ class PurchaseOrder extends Model
                 : 'POS'.Str::padLeft($this->id, 6, '0');
     }
 
-    public function items(): HasMany
+    public function product(): BelongsTo
     {
-        return $this->hasMany(PurchaseOrderItem::class);
+        return $this->belongsTo(Product::class);
     }
 }

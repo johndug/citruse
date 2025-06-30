@@ -10,7 +10,9 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', 10);
+        $this->authorize('viewAny', User::class);
+
+        $perPage = $request->input('per_page', 100);
         $page = $request->input('page', 1);
 
         $users = User::paginate($perPage, ['*'], 'page', $page);
