@@ -5,26 +5,6 @@ A modern web application built with Laravel 12, Vue 3, and Tailwind CSS for mana
 ## What is done
 - All the axios calls also handlers error from the server and isLoading disables the the form
 
-## What is missing
-- **Dockerfile**: Didn't feel confident in containerizing my project
-- **Product Price Management**: Didn't get around to that
-- **Postgres missing**: Same reason why the its why its not in a container
-
-## Database Layout
-- I chose the make a venders table with a type, distributor and supplier
-- I separated the products from the prices
-- DDL is here [https://github.com/johndug/citruse/blob/main/database_ddl.txt]
-
-## Summary
-
-I was a little foggy around the PM contacts the FSA to confirm requirements
-And does the purchase_orders table need a distributer and a supplier?
-
-## AI Assistance
-
-- all tailwind was done by claude
-- and generally I needed more assistance with the FE than the BE
-
 ## Features
 
 - **User Management**: Role-based authentication (Admin, Manager, Sales)
