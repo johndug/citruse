@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { createPinia } from 'pinia'
 import axios from 'axios'
 import App from './views/Nav.vue'
+import '../css/app.css'
 
 // Import your Vue components
 import Login from './views/Auth/Login.vue'
